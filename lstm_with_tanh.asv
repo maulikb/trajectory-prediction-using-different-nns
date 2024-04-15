@@ -1,45 +1,40 @@
-% model4_gru_relu.m
+% model1_lstm_tanh.m
 
-% Define GRU network architecture for Model 4
+% Define LSTM network architecture for Model 1
 layers = [
     sequenceInputLayer(size(XTrain, 2))
-    gruLayer(128)
+    lstmLayer(128, 'OutputMode', 'sequence')
     fullyConnectedLayer(256)
-    reluLayer
+    tanhLayer
     fullyConnectedLayer(256)
-    reluLayer
+    tanhLayer
     fullyConnectedLayer(1)
     regressionLayer];
 
-% Training options for Model 4 with batch training, mini-batches, and regularization
 options = trainingOptions('adam', ...
-    'MaxEpochs', 30, ...
+    'MaxEpochs', 120, ...
     'MiniBatchSize', 32, ...
     'ValidationData', {XVal', YVal'}, ...
-    'ValidationFrequency', 2, ...
+    'ValidationFrequency', 10, ...
     'Plots', 'training-progress', ...
     'ExecutionEnvironment', 'auto', ...
     'LearnRateSchedule', 'piecewise', ...
     'LearnRateDropPeriod', 10, ...
     'LearnRateDropFactor', 0.9, ...
     'L2Regularization', 0.01, ...
-    'OutputFcn', @stopIfValidationRMSEIncreases4); % Use the modified output function
+    'OutputFcn', @stopIfValidationRMSEIncreases); % Use the modified output function
 
-% Train Model 4
+
+
+
+% Train Model 1
 net = trainNetwork(XTrain', YTrain', layers, options);
 
-% Save the trained Model 4
-save('model4_gru_relu.mat', 'net');
+% Save the trained Model 1
+save('model1_lstm_tanh.mat', 'net');
 
 
-% Save the trained Model 4
-save('model4_gru_relu.mat', 'net');
-
-
-
-
-% Output function for Model 4
-function stop = stopIfValidationRMSEIncreases4(info)
+function stop = stopIfValidationRMSEIncreases(info)
     persistent bestValRMSE numIncreases
     stop = false; % This function should not issue a stop command
 
@@ -64,3 +59,4 @@ function stop = stopIfValidationRMSEIncreases4(info)
         end
     end
 end
+
